@@ -11,7 +11,7 @@ RUN apt-get update -y \
     && apt-get install -y powershell \
     && chmod +x /usr/bin/ttyd
 
-RUN pwsh -Command Install-Module -Scope CurrentUser -Name PnP.PowerShell -Force
+RUN pwsh -Command Install-Module SharePointPnPPowerShellOnline -Force
 
 WORKDIR /home
 CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 bash
