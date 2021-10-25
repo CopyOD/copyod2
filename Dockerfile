@@ -14,4 +14,4 @@ RUN apt-get update -y \
 RUN pwsh -Command Install-Module -Scope CurrentUser -Name PnP.PowerShell -Force
 
 WORKDIR /home
-CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 bash && pwsh
+CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 bash
