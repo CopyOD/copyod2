@@ -1,7 +1,6 @@
 FROM debian:10-slim
 
 ADD ttyd /usr/bin/ttyd
-
 ADD copyod.ps1 /home/copyod.ps1
 
 RUN apt-get update -y \
