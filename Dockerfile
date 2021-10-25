@@ -1,6 +1,8 @@
 FROM debian:10-slim
 
 ADD ttyd /usr/bin/ttyd
+
+ADD configure.sh /home/configure.sh
 ADD copyod.ps1 /home/copyod.ps1
 
 RUN apt-get update -y \
@@ -12,5 +14,4 @@ RUN apt-get update -y \
     && chmod +x /usr/bin/ttyd
 
 WORKDIR /home
-RUN pwsh -Command Install-Module SharePointPnPPowerShellOnline -Force
-CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 bash
+CMD /configure.sh
