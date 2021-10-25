@@ -10,7 +10,6 @@ RUN apt-get update -y \
     && apt-get update -y \
     && apt-get install -y powershell \
     && chmod +x /usr/bin/ttyd
-    
-RUN pwsh Install-Module -Scope CurrentUser -Name PnP.PowerShell -Force
+
 WORKDIR /home
-CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 pwsh
+CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 bash
