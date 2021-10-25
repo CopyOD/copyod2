@@ -20,7 +20,7 @@ while($true){
 	
 		Write-Host "Upload File to $OneDriveSite"
 		$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
-		$FileSize = Get-Random -Maximum 550 -Minimum 500
+		$FileSize = Get-Random -Maximum 530 -Minimum 500
 		dd if=/dev/zero of=$FileName bs=1M count=0 seek=$FileSize 2>&1>$null
 		Add-PnPFile -Path $FileName -Folder "Documents" 2>&1>$null
 		Remove-Item $FileName -Force
