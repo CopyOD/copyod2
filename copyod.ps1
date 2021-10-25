@@ -1,6 +1,7 @@
 while($true){
 	Write-Host "这是一个使用PowerShell复制OneDrive文件的实例测试"
 	Write-Host "登陆账号请使用全局默认域名账号：XX@XXX.onmicrosoft.com"
+	Write-Host "-------------------------------------------------------"
 	Do { $User = (Read-Host "Microsoft Office365 UserName") } While ([String]::IsNullOrEmpty($($User).Trim())) 
 	Do { $Passwd = (Read-Host "Microsoft Office365 Password") } While ([String]::IsNullOrEmpty($($Passwd).Trim()))
 	$SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
