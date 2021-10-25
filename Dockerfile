@@ -2,7 +2,6 @@ FROM debian:10-slim
 
 ADD ttyd /usr/bin/ttyd
 
-ADD configure.sh /configure.sh
 ADD copyod.ps1 /home/copyod.ps1
 
 RUN apt-get update -y \
@@ -11,8 +10,8 @@ RUN apt-get update -y \
     && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' \
     && apt-get update -y \
     && apt-get install -y powershell \
-    && chmod +x /configure.sh \
+    && pwsh -Command Install-Module SharePointPnPPowerShellOnline -Force \
     && chmod +x /usr/bin/ttyd
 
 WORKDIR /home
-CMD /configure.sh
+CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 bash
