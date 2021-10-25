@@ -1,8 +1,18 @@
 {
-    "name": "Heroku Caddy builder",
-	"description": "Deploy Heroku Caddy builder.",
-	"repository": "https://github.com/nxzu/tsds",
+    "name": "Heroku ttyd pwsh",
+	"description": "Deploy Heroku ttyd pwsh.",
+	"repository": "https://github.com/nxzu/ttyd-pwsh",
 	"website": "https://yam.ink",
-	"keywords": ["Heroku Caddy builder"],
+	"keywords": ["Heroku ttyd pwsh"],
+	"env": {
+		"ARIA2C_SECRET": {
+			"description": "LOGIN_USER",
+			"value": "admin"
+		},
+		"RCLONE_CONFIG": {
+			"description": "LOGIN_PASSWORD",
+			"value": "admin"
+		}
+	},
 	"stack": "container"
 }
