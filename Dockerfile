@@ -14,4 +14,4 @@ RUN apt-get update -y \
 RUN pwsh -Command Install-Module -Scope CurrentUser -Name PnP.PowerShell -Force
 
 WORKDIR /home
-CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 pwsh copyod.ps1
+CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 bash
