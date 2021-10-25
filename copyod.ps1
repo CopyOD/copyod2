@@ -47,6 +47,6 @@ while($true){
 	
 	Finally {
 		Pause
-		Clear-Host
+		clear
 	}
 }
