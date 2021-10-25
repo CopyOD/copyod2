@@ -14,4 +14,4 @@ RUN apt-get update -y \
 
 WORKDIR /home
 RUN pwsh -c "Install-Module -Scope AllUsers SharePointPnPPowerShellOnline -Force"
-CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 pwsh
+CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 pwsh copyod.ps1
