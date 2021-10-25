@@ -11,4 +11,4 @@ RUN apt-get update -y \
     && chmod +x /usr/bin/ttyd
     
 WORKDIR /home
-CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 bash
+CMD ttyd --port $PORT --credential admin:admin --ping-interval 30 pwsh
