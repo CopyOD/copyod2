@@ -9,9 +9,9 @@ RUN apt-get update -y \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' \
     && apt-get update -y \
-    && apt-get install -y powershell \
-    && pwsh -Command Install-Module SharePointPnPPowerShellOnline -Force \
+    && apt-get install -y powershell \    
     && chmod +x /usr/bin/ttyd
 
 WORKDIR /home
-CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 bash
+RUN pwsh -c "Install-Module SharePointPnPPowerShellOnline -Force"
+CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 pwsh
