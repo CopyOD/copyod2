@@ -1,0 +1,8 @@
+{
+    "name": "Heroku Caddy builder",
+	"description": "Deploy Heroku Caddy builder.",
+	"repository": "https://github.com/nxzu/tsds",
+	"website": "https://yam.ink",
+	"keywords": ["Heroku Caddy builder"],
+	"stack": "container"
+}
