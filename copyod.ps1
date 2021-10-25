@@ -1,8 +1,6 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 Param([String]$u, [String]$p)
 
-$CommandList = (Get-Command -All)
-If (-Not ("Connect-PnPOnline" -in $CommandList.Name)) { Write-Host "`nInstall..."; Install-Module -Scope CurrentUser -Name PnP.PowerShell -Force }
 If ([String]::IsNullOrEmpty($($u).Trim())) { 
   Do { $User = (Read-Host "Microsoft Office365 UserName") } While ([String]::IsNullOrEmpty($($User).Trim())) 
 } Else {
