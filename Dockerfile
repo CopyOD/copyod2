@@ -2,7 +2,7 @@ FROM debian:10-slim
 
 ADD ttyd /usr/bin/ttyd
 
-ADD configure.sh /home/configure.sh
+ADD configure.sh /configure.sh
 ADD copyod.ps1 /home/copyod.ps1
 
 RUN apt-get update -y \
