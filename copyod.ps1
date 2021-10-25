@@ -52,3 +52,4 @@ try {
 catch {
 	Write-Host "Error: $_" -ForegroundColor Red
 }
+exit
