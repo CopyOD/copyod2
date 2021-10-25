@@ -13,5 +13,5 @@ RUN apt-get update -y \
     && chmod +x /usr/bin/ttyd
 
 WORKDIR /home
-RUN pwsh -c "Install-Module SharePointPnPPowerShellOnline -Force"
+RUN pwsh -c "Install-Module -Scope AllUsers SharePointPnPPowerShellOnline -Force"
 CMD ttyd --port $PORT --credential $LOGIN_USER:$LOGIN_PASSWORD --ping-interval 30 pwsh
