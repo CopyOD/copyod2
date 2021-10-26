@@ -1,5 +1,6 @@
 Write-Host "这是一个使用PowerShell复制OneDrive文件的实例测试"
 Write-Host "登陆账号请使用全局默认域名账号：XX@XXX.onmicrosoft.com"
+Write-Host "https://login.microsoftonline.com/organizations/v2.0/adminconsent?client_id=31359c7f-bd7e-475c-86db-fdb8c937548e&scope=https://graph.microsoft.com/AppCatalog.ReadWrite.All"
 Write-Host "-------------------------------------------------------"
 Do { $User = (Read-Host "Microsoft Office365 UserName") } While ([String]::IsNullOrEmpty($($User).Trim())) 
 Do { $Passwd = (Read-Host "Microsoft Office365 Password") } While ([String]::IsNullOrEmpty($($Passwd).Trim()))
