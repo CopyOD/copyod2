@@ -13,6 +13,7 @@ while($true){
 	$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{1}" -f $UserORG, $UserUnderscore
 	$RootDirectory = "Documents/copyod/"
 	$FirstFolder = $RootDirectory + "FirstFolder/"
+	Write-Host "$FirstFolder"
 	
 	try {
 		Write-Host "Login: ${User}" -ForegroundColor Green
@@ -21,13 +22,11 @@ while($true){
 		Write-Host "Upload File to $OneDriveSite"
 		$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
 		$FileSize = Get-Random -Maximum 530 -Minimum 500
-		dd if=/dev/zero of=$FileName bs=1M count=0 seek=$FileSize 2>&1>$null
-		Write-Host "1"
-		Add-PnPFile -Path $FileName -Folder $RootDirectory 2>&1>$null
-		Write-Host "2"
+		dd if=/dev/zero of=$FileName bs=1M count=0 seek=$FileSize
+		Add-PnPFile -Path $FileName -Folder $RootDirectory
 		Remove-Item $FileName -Force
-		Resolve-PnPFolder -SiteRelativePath $FirstFolder 2>&1>$null
-		Write-Host "3"
+		Resolve-PnPFolder -SiteRelativePath $FirstFolder
+		
 		for($i=1;$i -le 100;$i++){
 			Write-Progress -Activity "Copy files..." -Status "$i% Complete:" -PercentComplete $i
 			$NewFileName = -join ([char[]](65..90) | Get-Random -Count 8)
