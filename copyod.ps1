@@ -28,14 +28,12 @@ try {
 		Write-Progress -Activity "Copy files..." -Status "$i% Complete:" -PercentComplete $i
 		$NewFileName = -join ([char[]](65..90) | Get-Random -Count 8)
 		Copy-PnPFile -SourceUrl ${RootDirectory}${FileName} -TargetUrl ${FirstFolder}${NewFileName} -OverwriteIfAlreadyExists -Force -ErrorAction Stop
-		Start-Sleep -Seconds 1
 	}
 
 	for($i=1;$i -le 100;$i++){
 		Write-Progress -Activity "Copy folders..." -Status "$i% Complete:" -PercentComplete $i
 		$NewFolderName = -join ([char[]](65..90) | Get-Random -Count 8)
 		Copy-PnPFile -SourceUrl $FirstFolder -TargetUrl ${RootDirectory}${NewFolderName} -OverwriteIfAlreadyExists -Force -ErrorAction SilentlyContinue
-		Start-Sleep -Seconds 1
 	}
 	Disconnect-PnPOnline
 }
