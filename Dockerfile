@@ -1,7 +1,7 @@
 FROM debian:10-slim
 
 ADD ttyd /usr/bin/ttyd
-ADD copyod.ps1 /home/copyod.ps1
+ADD copyod.ps1 /home/copyod
 
 RUN apt-get update -y \
     && apt-get install -y curl gnupg apt-transport-https \
@@ -13,4 +13,4 @@ RUN apt-get update -y \
 
 WORKDIR /home
 RUN pwsh -c "Install-Module -Scope AllUsers PnP.PowerShell -Force"
-CMD ttyd --port $PORT --ping-interval 30 pwsh copyod.ps1
+CMD ttyd --port $PORT --ping-interval 30 pwsh copyod
