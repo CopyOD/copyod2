@@ -14,10 +14,9 @@ $OneDriveSite = "https://$UserORG-my.sharepoint.com/personal/$UserUnderscore"
 $RootDirectory = "Documents/copyod/"
 $FirstFolder = $RootDirectory + "FirstFolder/"
 
-Write-Host "Login: ${User}" -ForegroundColor Green
-Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
-If (-Not $?) { Write-Host "Error: PnPOnline Authentication." -ForegroundColor red; Pause; Exit 1; }
 try {
+	Write-Host "Login: ${User}" -ForegroundColor Green
+	Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 	Write-Host "Upload File to $OneDriveSite"
 	$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
 	$FileSize = Get-Random -Maximum 550 -Minimum 500
