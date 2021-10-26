@@ -10,12 +10,13 @@ while($true){
 	
 	$UserUnderscore = $User -replace "[^a-zA-Z]", "_"
 	$UserORG = ($UserUnderscore -Split "_")[1]
-	$OneDriveSite = "https://$UserORG-my.sharepoint.com/personal/$UserUnderscore"
+	$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{0}" -f $UserORG, $UserUnderscore
 	$RootDirectory = "Documents/copyod/"
-	$FirstFolder = "${RootDirectory}FirstFolder/"
+	$FirstFolder = $RootDirectory + "FirstFolder/"
 	
 	try {
 		Write-Host "Login: ${User}" -ForegroundColor Green
+		Write-Host $OneDriveSite
 		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 
 		Write-Host "Upload File to $OneDriveSite"
