@@ -10,7 +10,7 @@ while($true){
 	
 	$UserUnderscore = $User -replace "[^a-zA-Z0-9]", "_"
 	$UserORG = ($UserUnderscore -Split "_")[1]
-	$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{0}" -f $UserORG, $UserUnderscore
+	$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{1}" -f $UserORG, $UserUnderscore
 	$RootDirectory = "Documents/copyod/"
 	$FirstFolder = $RootDirectory + "FirstFolder/"
 	
