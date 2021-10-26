@@ -7,7 +7,6 @@ Do { $Passwd = (Read-Host "Microsoft Office365 Password") } While ([String]::IsN
 $SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
 $MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${User},${SecureString}
 
-
 $UserUnderscore = $User -replace "[^a-zA-Z]", "_"
 $UserORG = ($UserUnderscore -Split "_")[1]
 $OneDriveSite = "https://$UserORG-my.sharepoint.com/personal/$UserUnderscore"
@@ -38,12 +37,12 @@ try {
 		Copy-PnPFile -SourceUrl $FirstFolder -TargetUrl ${RootDirectory}${NewFolderName} -OverwriteIfAlreadyExists -Force -ErrorAction SilentlyContinue
 		Start-Sleep -Seconds 1
 	}
+	Disconnect-PnPOnline
 }
 catch {
 	Write-Host "Error: $_" -ForegroundColor Red
 }
 Finally {
-	Disconnect-PnPOnline
 	Pause
 	Exit 1
 }
