@@ -12,7 +12,7 @@ while($true){
 	$UserORG = ($UserUnderscore -Split "_")[1]
 	$OneDriveSite = "https://$UserORG-my.sharepoint.com/personal/$UserUnderscore"
 	$RootDirectory = "Documents/copyod/"
-	$FirstFolder = $RootDirectory + "FirstFolder/"
+	$FirstFolder = "${RootDirectory}FirstFolder/"
 	
 	try {
 		Write-Host "Login: ${User}" -ForegroundColor Green
