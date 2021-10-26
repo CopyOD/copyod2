@@ -8,7 +8,7 @@ while($true){
 	$SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
 	$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${User},${SecureString}
 	
-	$UserUnderscore = $User -replace "[^a-zA-Z]", "_"
+	$UserUnderscore = $User -replace "[^a-zA-Z0-9]", "_"
 	$UserORG = ($UserUnderscore -Split "_")[1]
 	$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{0}" -f $UserORG, $UserUnderscore
 	$RootDirectory = "Documents/copyod/"
@@ -16,7 +16,6 @@ while($true){
 	
 	try {
 		Write-Host "Login: ${User}" -ForegroundColor Green
-		Write-Host $OneDriveSite
 		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 
 		Write-Host "Upload File to $OneDriveSite"
