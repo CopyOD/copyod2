@@ -22,7 +22,7 @@ while($true){
 		$OneDriveSite = "https://{0}-my.sharepoint.com/personal/xs_{0}_onmicrosoft_com" -f $UserORG
 		$RootDirectory = "Documents/copyod/"
 		$FirstFolder = $RootDirectory + "FirstFolder/"
-		Write-Host "Upload "
+		Write-Host $OneDriveSite
 		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 		
 		Write-Host "Upload File to $OneDriveSite"
