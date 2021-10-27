@@ -3,8 +3,8 @@ Write-Host "登陆账号请使用全局默认域名账号：XX@XXX.onmicrosoft.c
 Write-Host "-------------------------------------------------------"
 Do { $AdminUser = (Read-Host "Microsoft Office365 AdminUser") } While ([String]::IsNullOrEmpty($($AdminUser).Trim())) 
 Do { $AdminPwd = (Read-Host "Microsoft Office365 AdminPwd") } While ([String]::IsNullOrEmpty($($AdminPwd).Trim()))
-$SecureString = ConvertTo-SecureString -AsPlainText "${AdminPwd}" -Force
-$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
+#$SecureString = ConvertTo-SecureString -AsPlainText "${AdminPwd}" -Force
+#$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
 
 try {
 	az login -u $AdminUser -p $AdminPwd --allow-no-subscriptions --only-show-errors 2>&1>$null
