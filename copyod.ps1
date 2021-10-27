@@ -38,7 +38,7 @@ while($true){
 		}
 	
 		Disconnect-PnPOnline
-		Write-Host "账号运行完毕"
+		Write-Host "Finish"
 	}
 	
 	catch {
