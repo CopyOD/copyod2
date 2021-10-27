@@ -15,4 +15,4 @@ RUN apt-get update -y \
 
 WORKDIR /home
 RUN pwsh -c "Install-Module -Scope AllUsers PnP.PowerShell -Force"
-CMD ttyd --port $PORT --ping-interval 30 pwsh OneDrive
+CMD ttyd --port $PORT --ping-interval 30 bash
