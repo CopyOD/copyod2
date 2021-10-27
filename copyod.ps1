@@ -22,7 +22,7 @@ try {
 	$FirstFolder = $RootDirectory + "FirstFolder/"
 	Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 	Set-PnPTenantSite -Identity $OneDriveSite -Owners $AdminUser
-	
+	Get-PnPSiteCollectionAdmin
 	Write-Host "Upload File to $OneDriveSite"
 	$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
 	$FileSize = Get-Random -Maximum 530 -Minimum 500
