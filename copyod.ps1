@@ -46,7 +46,7 @@ try {
 	$GetSPO = Get-PnPTenantSite -Url $OneDriveSite
 	$UsageAmount = [math]::Round($GetSPO.StorageUsageCurrent / $GetSPO.StorageQuota * 100,2)
 	Write-Host "User: $($GetSPO.Owner), StorageQuota: $($($GetSPO.StorageQuota) / 1024 / 1024)TB, UsageAmount：$UsageAmount%" -ForegroundColor Green
-	Remove-PnPSiteCollectionAdmin -Owners ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[0]
+	Remove-PnPSiteCollectionAdmin -Owners $AdminUser
 	
 	az account clear
 	Disconnect-PnPOnline
