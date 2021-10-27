@@ -8,7 +8,6 @@ while($true){
 	$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
 	
 	try {
-		Write-Host "Login: ${AdminUser}" -ForegroundColor Green
 		az login -u $AdminUser -p $AdminPwd --allow-no-subscriptions --only-show-errors 2>&1>$null
 		$PnPPowerShellAppId = "31359c7f-bd7e-475c-86db-fdb8c937548e"
 		$existUAPI = az ad sp show --id $PnPPowerShellAppId 2>&1>$null
@@ -47,12 +46,11 @@ while($true){
 		
 		$GetSPO = Get-PnPTenantSite -Url $OneDriveSite
 		$UsageAmount = [math]::Round($GetSPO.StorageUsageCurrent / $GetSPO.StorageQuota * 100,2)
-		Write-Host "User: $($GetSPO.Owner)   StorageQuota: $($($GetSPO.StorageQuota) / 1024 / 1024)TB, UsageAmount：$UsageAmount%"
+		Write-Host "User: $($GetSPO.Owner), StorageQuota: $($($GetSPO.StorageQuota) / 1024 / 1024)TB, UsageAmount：$UsageAmount%" -ForegroundColor Green
 		Remove-PnPSiteCollectionAdmin -Owners ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[0]
 		
 		az account clear
 		Disconnect-PnPOnline
-		Write-Host "Finish"
 	}
 	
 	catch {
