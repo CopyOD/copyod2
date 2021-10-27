@@ -4,8 +4,8 @@ while($true){
 	Write-Host "-------------------------------------------------------"
 	Do { $AdminUser = (Read-Host "Microsoft Office365 AdminUser") } While ([String]::IsNullOrEmpty($($AdminUser).Trim())) 
 	Do { $AdminPwd = (Read-Host "Microsoft Office365 AdminPwd") } While ([String]::IsNullOrEmpty($($AdminPwd).Trim()))
-	$SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
-	$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${User},${SecureString}
+	$SecureString = ConvertTo-SecureString -AsPlainText "${AdminPwd}" -Force
+	$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
 	
 	try {
 		Write-Host "Login: ${AdminUser}" -ForegroundColor Green
