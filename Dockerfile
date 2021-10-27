@@ -4,7 +4,7 @@ ADD ttyd /usr/bin/ttyd
 ADD copyod.ps1 /home/copyod
 
 RUN apt-get update -y \
-    && apt-get install -y curl gnupg apt-transport-https \
+    && apt-get install -y curl gnupg apt-transport-https azure-cli \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' \
     && apt-get update -y \
