@@ -23,6 +23,7 @@ while($true){
 		$RootDirectory = "Documents/copyod/"
 		$FirstFolder = $RootDirectory + "FirstFolder/"
 		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
+		Set-PnPTenantSite -Identity $OneDriveSite -Owners $AdminUser
 		
 		Write-Host "Upload File to $OneDriveSite"
 		$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
@@ -47,6 +48,7 @@ while($true){
 		$GetSPO = Get-PnPTenantSite -Url $OneDriveSite
 		$UsageAmount = [math]::Round($GetSPO.StorageUsageCurrent / $GetSPO.StorageQuota * 100,2)
 		Write-Host "User: $($GetSPO.Owner)   StorageQuota: $($($GetSPO.StorageQuota) / 1024 / 1024)TB, UsageAmount：$UsageAmount%"
+		Remove-PnPSiteCollectionAdmin -Owners ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[0]
 		
 		az account clear
 		Disconnect-PnPOnline
