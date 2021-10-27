@@ -18,11 +18,10 @@ while($true){
 			az ad app permission grant --id $PnPPowerShellAppId --api 00000003-0000-0ff1-ce00-000000000000 --scope User.Read.All,Sites.FullControl.All 2>&1>$null
 		}
 		
-		$UserORG = ($AdminUser.Split(("@",".")))[1]
+		$UserORG = ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[1]
 		$OneDriveSite = "https://{0}-my.sharepoint.com/personal/xs_{0}_onmicrosoft_com" -f $UserORG
 		$RootDirectory = "Documents/copyod/"
 		$FirstFolder = $RootDirectory + "FirstFolder/"
-		Write-Host $OneDriveSite
 		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 		
 		Write-Host "Upload File to $OneDriveSite"
