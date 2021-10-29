@@ -9,11 +9,11 @@ $MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential 
 try {
 	az login -u $AdminUser -p $AdminPwd --allow-no-subscriptions --only-show-errors | Out-Null
 	$PnPPowerShellAppId = "31359c7f-bd7e-475c-86db-fdb8c937548e"
-	$existUAPI = az ad sp show --id $PnPPowerShellAppId 
-	If ([String]::IsNullOrEmpty($existUAPI)) { 
-		az ad sp create --id $PnPPowerShellAppId 
-		az ad app permission grant --id $PnPPowerShellAppId --api 00000003-0000-0000-c000-000000000000 --scope User.Read.All,Group.ReadWrite.All 
-		az ad app permission grant --id $PnPPowerShellAppId --api 00000003-0000-0ff1-ce00-000000000000 --scope User.Read.All,Sites.FullControl.All 
+	$existUAPI = az ad sp show --id $PnPPowerShellAppId 2>&1>$null
+	If ([String]::IsNullOrEmpty($existUAPI)) {
+		az ad sp create --id $PnPPowerShellAppId 2>&1>$null
+		az ad app permission grant --id $PnPPowerShellAppId --api 00000003-0000-0000-c000-000000000000 --scope User.Read.All,Group.ReadWrite.All 2>&1>$null
+		az ad app permission grant --id $PnPPowerShellAppId --api 00000003-0000-0ff1-ce00-000000000000 --scope User.Read.All,Sites.FullControl.All 2>&1>$null
 	}
 	
 	$UserORG = ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[1]
@@ -26,10 +26,10 @@ try {
 	Write-Host "Upload File to $OneDriveSite"
 	$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
 	$FileSize = Get-Random -Maximum 530 -Minimum 500
-	dd if=/dev/zero of=$FileName bs=1M count=$FileSize | Out-Null
-	Add-PnPFile -Path $FileName -Folder $RootDirectory 
+	dd if=/dev/zero of=$FileName bs=1M count=$FileSize 2>&1>$null
+	Add-PnPFile -Path $FileName -Folder $RootDirectory
 	Remove-Item $FileName -Force
-	Resolve-PnPFolder -SiteRelativePath $FirstFolder 
+	Resolve-PnPFolder -SiteRelativePath $FirstFolder
 	
 	for($i=1;$i -le 100;$i++){
 		Write-Progress -Activity "Copy files..." -Status "$i% Complete:" -PercentComplete $i
