@@ -7,7 +7,7 @@ $SecureString = ConvertTo-SecureString -AsPlainText "${AdminPwd}" -Force
 $MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
 
 try {
-	az login -u $AdminUser -p $AdminPwd --allow-no-subscriptions --only-show-errors 
+	az login -u $AdminUser -p $AdminPwd --allow-no-subscriptions --only-show-errors | Out-Null
 	$PnPPowerShellAppId = "31359c7f-bd7e-475c-86db-fdb8c937548e"
 	$existUAPI = az ad sp show --id $PnPPowerShellAppId 
 	If ([String]::IsNullOrEmpty($existUAPI)) { 
@@ -26,7 +26,7 @@ try {
 	Write-Host "Upload File to $OneDriveSite"
 	$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
 	$FileSize = Get-Random -Maximum 530 -Minimum 500
-	dd if=/dev/zero of=$FileName bs=1M count=0 seek=$FileSize 
+	dd if=/dev/zero of=$FileName bs=1M count=$FileSize | Out-Null
 	Add-PnPFile -Path $FileName -Folder $RootDirectory 
 	Remove-Item $FileName -Force
 	Resolve-PnPFolder -SiteRelativePath $FirstFolder 
@@ -46,7 +46,7 @@ try {
 	$GetSPO = Get-PnPTenantSite -Url $OneDriveSite
 	$UsageAmount = [math]::Round($GetSPO.StorageUsageCurrent / $GetSPO.StorageQuota * 100,2)
 	Write-Host "User: $($GetSPO.Owner), StorageQuota: $($($GetSPO.StorageQuota) / 1024 / 1024)TB, UsageAmount：$UsageAmount%" -ForegroundColor Green
-	Remove-PnPSiteCollectionAdmin -Owners $AdminUser
+	Remove-PnPSiteCollectionAdmin -Owners ($AdminUser -Split {$_ -eq "@" -or $_ -eq "."})[0]
 	
 	az account clear
 	Disconnect-PnPOnline
