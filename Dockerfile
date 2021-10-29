@@ -15,4 +15,4 @@ RUN apt-get update -y \
 
 WORKDIR /home
 RUN pwsh -c "Install-Module -Scope AllUsers AzureAD,MSOnline,PnP.PowerShell -Force"
-CMD ttyd --port 8080 --ping-interval 30 pwsh OneDrive
+CMD ttyd --port 8080 --ping-interval 30 bash
