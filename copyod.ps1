@@ -112,4 +112,4 @@ Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
 $Ctx = Get-PnPContext
  
 #Call the function to Upload File
-Upload-LargeFile -FilePath "E:\Win7PE" -LibraryName "Documents"
+Upload-LargeFile -FilePath "/home/esysh" -LibraryName "Documents"
