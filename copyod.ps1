@@ -140,11 +140,12 @@ If ([String]::IsNullOrEmpty($($p).Trim())) {
 }
 $SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
 $MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${User},${SecureString}
-$UserORG = ($User -Split {$_ -eq "@" -or $_ -eq "."})[1]
-$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{1}_{0}_onmicrosoft_com" -f $UserORG, $UserName
+$UserUnderscore = $User -replace "[^a-zA-Z0-9]", "_"
+$UserORG = ($UserUnderscore -Split "_")[1]
+$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{1}" -f $UserORG, $UserUnderscore
 $RootDirectory = "Documents/copyod/"
 $FirstFolder = $RootDirectory + "FirstFolder/"
-
+Write-Host $OneDriveSite
 Try {
 	Write-Host "Login: ${User}" -ForegroundColor Green
 	Try {
@@ -156,7 +157,6 @@ Try {
 		} else {
 			dd if=/dev/zero of=$SplitPath/$FileName bs=1 count=0 seek=$FileSize 2>&1>$null
 		}
-		#Write-Host "Upload $FileName to $($GetSPO.Owner)"
 		Upload-LargeFile -FilePath "$SplitPath/$FileName" -LibraryName "Documents"
 		Copy-Files -FilePath "Documents/$FileName"
 		Write-Host "Finish!`n" -ForegroundColor Green
