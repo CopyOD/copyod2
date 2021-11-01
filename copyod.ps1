@@ -1,17 +1,22 @@
+[CmdletBinding()]
+Param([String]$u, [String]$p)
+#Install-Module -Name PnP.PowerShell
+
 #Function to Upload Large File to SharePoint Online Library
-Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=50) {
+Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=10) {
+	$Ctx = Get-PnPContext
     Try {
         #Get File Name
         $FileName = [System.IO.Path]::GetFileName($FilePath)
         $UploadId = [GUID]::NewGuid()
-		
+
         #Get the folder to upload
         $Library = $Ctx.Web.Lists.GetByTitle($LibraryName)
         $Ctx.Load($Library)
         $Ctx.Load($Library.RootFolder)
         $Ctx.ExecuteQuery()
- 
-        $BlockSize = $FileChunkSize * 1024 * 1024  
+
+        $BlockSize = $FileChunkSize * 1024 * 1024
         $FileSize = (Get-Item $FilePath).length
         If($FileSize -le $BlockSize) {
             #Regular upload
@@ -28,7 +33,7 @@ Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=50) {
             #Large File Upload in Chunks
             $ServerRelativeUrlOfRootFolder = $Library.RootFolder.ServerRelativeUrl
             [Microsoft.SharePoint.Client.File]$Upload
-            $BytesUploaded = $null 
+            $BytesUploaded = $null
             $Filestream = $null
             $Filestream = [System.IO.File]::Open($FilePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
             $BinaryReader = New-Object System.IO.BinaryReader($Filestream)
@@ -39,21 +44,19 @@ Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=50) {
             $BytesRead
             $First = $True
             $Last = $False
- 
+
             #Read data from the file in blocks
-			$i = 0
-            While(($BytesRead = $BinaryReader.Read($Buffer, 0, $Buffer.Length)) -gt 0) { 
-				$i = $i+1
-				Write-Host $i
-				#Write-Progress -Activity "Searching Events" -Status "Progress:" -PercentComplete ($i/$Events.count*100)
-                #Write-Progress -Activity "Copy files..." -Status "$i% Complete:" -PercentComplete $i
-				$TotalBytesRead = $TotalBytesRead + $BytesRead 
-                If ($TotalBytesRead -eq $FileSize) {  
+			$ChunksAmount = [Math]::Ceiling($FileSize / $BlockSize); $i=0
+            While(($BytesRead = $BinaryReader.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
+				$i++; $PercentComplete = [Math]::Round($i/$ChunksAmount*100)
+				Write-Progress -Activity "Upload File..." -Status "$PercentComplete% Complete:" -PercentComplete $PercentComplete
+				$TotalBytesRead = $TotalBytesRead + $BytesRead
+                If ($TotalBytesRead -eq $FileSize) {
                     $Last = $True
                     $LastBuffer = New-Object System.Byte[]($BytesRead)
-                    [Array]::Copy($Buffer, 0, $LastBuffer, 0, $BytesRead)  
+                    [Array]::Copy($Buffer, 0, $LastBuffer, 0, $BytesRead)
                 }
-                If($First) {  
+                If($First) {
                     #Create the File in Target
                     $ContentStream = New-Object System.IO.MemoryStream
                     $FileCreationInfo = New-Object Microsoft.SharePoint.Client.FileCreationInformation
@@ -64,20 +67,20 @@ Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=50) {
                     $Ctx.Load($Upload)
  
                     #Start FIle upload by uploading the first slice
-                    $s = new-object System.IO.MemoryStream(, $Buffer)  
+                    $s = new-object System.IO.MemoryStream(, $Buffer)
                     $BytesUploaded = $Upload.StartUpload($UploadId, $s)
-                    $Ctx.ExecuteQuery()  
-                    $fileoffset = $BytesUploaded.Value  
-                    $First = $False 
-                }  
-                Else {  
+                    $Ctx.ExecuteQuery()
+                    $fileoffset = $BytesUploaded.Value
+                    $First = $False
+                }
+                Else {
                     #Get the File Reference
                     $Upload = $ctx.Web.GetFileByServerRelativeUrl($Library.RootFolder.ServerRelativeUrl + [System.IO.Path]::AltDirectorySeparatorChar + $FileName);
                     If($Last) {
                         $s = [System.IO.MemoryStream]::new($LastBuffer)
                         $Upload = $Upload.FinishUpload($UploadId, $fileoffset, $s)
                         $Ctx.ExecuteQuery()
-                        Write-Host "File Upload completed!" -f Green                        
+                        Write-Host "File Upload completed!" -f Green
                     }
                     Else {
                         #Update fileoffset for the next slice
@@ -98,18 +101,72 @@ Function Upload-LargeFile($FilePath, $LibraryName, $FileChunkSize=50) {
         {
             $Filestream.Dispose()
         }
+		Remove-Item $FilePath -Force
     }
 }
- 
-#Connect to SharePoint Online site
-$AdminUser = "admin@sldoz.onmicrosoft.com"
-$AdminPwd = "As8520342"
-$SecureString = ConvertTo-SecureString -AsPlainText "${AdminPwd}" -Force
-$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${AdminUser},${SecureString}
-$OneDriveSite = "https://sldoz-my.sharepoint.com/personal/xs_sldoz_onmicrosoft_com"
-Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
-#Connect-PnPOnline "https://crescent.sharepoint.com/sites/marketing" -UseWebLogin
-$Ctx = Get-PnPContext
- 
-#Call the function to Upload File
-Upload-LargeFile -FilePath "/home/esysh" -LibraryName "Documents"
+
+#Copy OneDriveSite
+function Copy-Files($FilePath) {
+	Resolve-PnPFolder -SiteRelativePath $FirstFolder 2>&1>$null
+	Try {
+		Move-PnPFile -SourceUrl $FilePath -TargetUrl ${RootDirectory}${FileName} -Force
+		for($i=1;$i -le 100;$i++){
+			Write-Progress -Activity "Copy files..." -Status "$i% Complete:" -PercentComplete $i
+			$NewFileName = -join ([char[]](65..90) | Get-Random -Count 8)
+			Copy-PnPFile -SourceUrl ${RootDirectory}${FileName} -TargetUrl ${FirstFolder}${NewFileName} -OverwriteIfAlreadyExists -Force -ErrorAction Stop
+		}
+		Write-Host "File Copy completed!" -f Green
+		for($i=1;$i -le 100;$i++){
+			Write-Progress -Activity "Copy folders..." -Status "$i% Complete:" -PercentComplete $i
+			$NewFolderName = -join ([char[]](65..90) | Get-Random -Count 8)
+			Copy-PnPFile -SourceUrl $FirstFolder -TargetUrl ${RootDirectory}${NewFolderName} -OverwriteIfAlreadyExists -Force -ErrorAction SilentlyContinue
+		}
+		Write-Host "File folders completed!" -f Green
+	}
+    Catch {
+        Write-Host $_.Exception.Message -ForegroundColor Red
+    }
+}
+
+If ([String]::IsNullOrEmpty($($u).Trim())) { 
+  Do { $User = (Read-Host "Microsoft Office365 UserName") } While ([String]::IsNullOrEmpty($($User).Trim()))
+} Else {
+  $User = $u
+}
+If ([String]::IsNullOrEmpty($($p).Trim())) { 
+  Do { $Passwd = (Read-Host "Microsoft Office365 Password") } While ([String]::IsNullOrEmpty($($Passwd).Trim()))
+} Else {
+  $Passwd = $p
+}
+$SecureString = ConvertTo-SecureString -AsPlainText "${Passwd}" -Force
+$MySecureCreds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${User},${SecureString}
+$UserORG = ($User -Split {$_ -eq "@" -or $_ -eq "."})[1]
+$OneDriveSite = "https://{0}-my.sharepoint.com/personal/{1}_{0}_onmicrosoft_com" -f $UserORG, $UserName
+$RootDirectory = "Documents/copyod/"
+$FirstFolder = $RootDirectory + "FirstFolder/"
+
+Try {
+	Write-Host "Login: ${User}" -ForegroundColor Green
+	Try {
+		Connect-PnPOnline -Url $OneDriveSite -Credentials $MySecureCreds
+		$FileName = -join ([char[]](65..90) | Get-Random -Count 4)
+		$FileSize = Get-Random -Maximum 531000000 -Minimum 530000000
+		if ($IsWindows -or $ENV:OS) {
+			fsutil file createnew $SplitPath/$FileName $FileSize 2>&1>$null
+		} else {
+			dd if=/dev/zero of=$SplitPath/$FileName bs=1 count=0 seek=$FileSize 2>&1>$null
+		}
+		#Write-Host "Upload $FileName to $($GetSPO.Owner)"
+		Upload-LargeFile -FilePath "$SplitPath/$FileName" -LibraryName "Documents"
+		Copy-Files -FilePath "Documents/$FileName"
+		Write-Host "Finish!`n" -ForegroundColor Green
+		Disconnect-PnPOnline
+	}
+	Catch {
+		Write-Host $_.Exception.Message -ForegroundColor Red
+	}
+}
+Catch {
+	Write-Host $_.Exception.Message -ForegroundColor Red
+}
+Pause
